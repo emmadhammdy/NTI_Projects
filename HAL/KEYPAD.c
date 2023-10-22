@@ -25,31 +25,39 @@ void keypad_cfg() {
 	DIO_voidSetPinValue(pD, 5, HIGH);
 	DIO_voidSetPinValue(pD, 6, HIGH);
 	DIO_voidSetPinValue(pD, 7, HIGH);
+
+
+
+	// set ROWS by default as Pull Up  //
+	DIO_voidSetPinValue(pC, 2, HIGH);
+	DIO_voidSetPinValue(pC, 3, HIGH);
+	DIO_voidSetPinValue(pC, 4, HIGH);
+	DIO_voidSetPinValue(pC, 5, HIGH);
+
+
 }
 
-usint8_t keypad_read(usint8_t num)
- {
+usint8_t keypad_read(void) {
 
-	    usint8_t r, c, keyvalue = -1;
-	    usint8_t row[4] = {2, 3, 4, 5}, col[4] = {3, 5, 6, 7};
+	usint8_t r, c, keyvalue = -1;
+	usint8_t row[4] = { 2, 3, 4, 5 }, col[4] = { 3, 5, 6, 7 };
 
-	    for (c = 0; c < 4; c++) {
-	        DIO_voidSetPinValue(pD, col[c], LOW);
+	for (c = 0; c < 4; c++) {
+		DIO_voidSetPinValue(pD, col[c], LOW);
 
-	        for (r = 0; r < 4; r++) {
-	            if (DIO_voidGetPinValue(pC, row[r]) == 0) {
-	                // Key is pressed
-	                keyvalue = r * 4 + c;
-	                // Debouncing delay
-	                while (DIO_voidGetPinValue(pC, row[r]) == 0);
-	            }
-	        }
+		for (r = 0; r < 4; r++) {
+			if (DIO_voidGetPinValue(pC, row[r]) == 0) {
+				// Key is pressed
+				keyvalue = r * 4 + c;
+				// Debouncing delay
+				while (DIO_voidGetPinValue(pC, row[r]) == 0);
+			}
+		}
 
-	        // Set the column back to HIGH for the next iteration
-	        DIO_voidSetPinValue(pD, col[c], HIGH);
-	    }
+		// Set the column back to HIGH for the next iteration
+		DIO_voidSetPinValue(pD, col[c], HIGH);
+	}
 
-	    return keyvalue;
-
+	return keyvalue;
 
 }
